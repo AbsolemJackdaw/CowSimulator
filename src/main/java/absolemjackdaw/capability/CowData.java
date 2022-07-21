@@ -1,16 +1,33 @@
 package absolemjackdaw.capability;
 
-import net.minecraft.core.BlockPos;
+import absolemjackdaw.network.CSyncCowData;
+import absolemjackdaw.network.CowNetwork;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.*;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.network.PacketDistributor;
+
+import javax.annotation.Nullable;
 
 public class CowData {
 
-    public boolean isCow = false;
-    public BlockPos eatingAt = null;
+    private static final ItemStack low = new ItemStack(Items.TROPICAL_FISH, 1);
+    private static final ItemStack high = new ItemStack(Items.MELON_SLICE, 1);
+    private static final ItemStack highest = new ItemStack(Items.CARROT, 1);
+    @Nullable
+    private final ServerPlayer serverPlayer;
+    private boolean isCow = false;
+    private int eating = 0;
 
-    public int eating = 0;
+    public CowData(@Nullable ServerPlayer serverPlayer) {
+        this.serverPlayer = serverPlayer;
+    }
 
     public static LazyOptional<CowData> get(Player player) {
 
@@ -25,5 +42,90 @@ public class CowData {
 
     public void read(CompoundTag nbt) {
         this.isCow = nbt.getBoolean("isCow");
+    }
+
+    /**
+     * server logic
+     */
+    public boolean isServerCow(Player player) {
+        return isCow && !player.level.isClientSide();
+    }
+
+    public boolean isClientCow(Player player) {
+        return isCow && player.level.isClientSide();
+    }
+
+    public void resetEating() {
+        eating = 0;
+        syncEating();
+    }
+
+    private void syncEating() {
+        if (serverPlayer != null)
+            CowNetwork.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CSyncCowData().with(eating));
+    }
+
+    public void eat() {
+        eating++;
+        if (eating - 1 == 0) //only sync when eating is updated to 1. client side only has to know whether the cow is eating or not.
+            syncEating(); //sync after counting up, the eating variable is passed on to the packet
+    }
+
+    public void setClientEating(int eating) {
+        this.eating = eating;
+    }
+
+    public boolean isEating() {
+        return eating > 0;
+    }
+
+    public void setCow(boolean flag) {
+        isCow = flag;
+        syncFlag();
+    }
+
+    private void syncFlag() {
+        if (serverPlayer != null)
+            CowNetwork.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CSyncCowData().with(isCow));
+    }
+
+    public void sync() {
+        if (serverPlayer != null)
+            CowNetwork.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CSyncCowData().with(eating).with(isCow));
+    }
+
+    public float getHeadEatAngleScale(LivingEntity clientPlayer, float partialTicks) { //use livingentity to prevent mishaps on server side with clientplayer
+        if (this.eating > 4) {
+            float f = ((float) eating - partialTicks) ;
+            return ((float) Math.PI / 5F) + 0.2F * Mth.sin(f * 50F);
+        } else {
+            return this.eating > 0 ? ((float) Math.PI / 5F) : clientPlayer.getXRot() * ((float) Math.PI / 180F);
+        }
+    }
+
+    public float getHeadEatPositionScale(float partialTicks) {
+        return Math.min(10F, 2.0F + (((float) eating - partialTicks) * 1.5f));
+    }
+
+    public void unCow() {
+        isCow = false;
+        syncFlag();
+    }
+
+    public boolean canEat(Block block) {
+        return block instanceof GrassBlock
+                || block instanceof DoublePlantBlock
+                || block instanceof TallGrassBlock
+                || block instanceof FlowerBlock
+                || block instanceof SeagrassBlock;
+    }
+
+    public Block replaceBlock(Block block) {
+        return block instanceof GrassBlock ? Blocks.DIRT : Blocks.AIR;
+    }
+
+    public ItemStack getFoodFor(Block block) {
+        return block instanceof GrassBlock ? highest : block instanceof DoublePlantBlock ? high : low;
+
     }
 }

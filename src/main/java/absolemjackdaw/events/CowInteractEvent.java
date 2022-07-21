@@ -15,7 +15,8 @@ public class CowInteractEvent {
         if (event.getSource().getEntity() instanceof Player player) {
             if (event.getEntity() instanceof Cow) {
                 CowData.get(player).ifPresent(cowData -> {
-                    cowData.isCow = true;
+                    if (!cowData.isClientCow(player)) //is not cow and is not client
+                        cowData.setCow(true);
                 });
             }
         }

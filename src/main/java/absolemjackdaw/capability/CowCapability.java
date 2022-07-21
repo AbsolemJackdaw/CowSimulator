@@ -4,7 +4,7 @@ import absolemjackdaw.CowSimulator;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -17,9 +17,10 @@ public class CowCapability implements ICapabilitySerializable<CompoundTag> {
     public static final ResourceLocation KEY = new ResourceLocation(CowSimulator.MODID, "cow_simulator_cap");
     public static Capability<CowData> CAPABILITY = CapabilityManager.get(new CapabilityToken<CowData>() {
     });
-    private final CowData data = new CowData();
+    private final CowData data;
 
-    public CowCapability(Player player) {
+    public CowCapability(ServerPlayer player) {
+        data = new CowData(player);
     }
 
     @Override
