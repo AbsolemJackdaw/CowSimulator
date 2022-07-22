@@ -24,6 +24,11 @@ public class EatGrassEvent {
                         cowData.eat();
                     } else if (cowData.isEating())
                         cowData.resetEating();
+                    //exhaust cows faster so they eat more
+                    if (serverPlayer.level.random.nextInt(600) == 0) { //TODO config option
+                        serverPlayer.getFoodData().setFoodLevel(Math.max(0, serverPlayer.getFoodData().getFoodLevel() - 1));
+                        serverPlayer.getFoodData().setSaturation(Math.max(0, serverPlayer.getFoodData().getSaturationLevel() - 1));
+                    }
                 }
             }
             //update eating counter instead of syncing it with a packet every tick

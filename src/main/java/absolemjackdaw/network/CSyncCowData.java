@@ -55,7 +55,7 @@ public class CSyncCowData {
             Player player = ClientSidedCalls.getClientPlayer();
             CowData.get(player).ifPresent(cowData -> {
                 if (isCow != null)
-                    cowData.setCow(isCow);
+                    cowData.turnCow(isCow);
                 if (eating != null)
                     cowData.setClientEating(eating);
             });

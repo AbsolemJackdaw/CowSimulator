@@ -79,7 +79,7 @@ public class CowData {
         return eating > 0;
     }
 
-    public void setCow(boolean flag) {
+    public void turnCow(boolean flag) {
         isCow = flag;
         syncFlag();
     }
@@ -96,8 +96,8 @@ public class CowData {
 
     public float getHeadEatAngleScale(LivingEntity clientPlayer, float partialTicks) { //use livingentity to prevent mishaps on server side with clientplayer
         if (this.eating > 4) {
-            float f = ((float) eating - partialTicks) ;
-            return ((float) Math.PI / 5F) + 0.2F * Mth.sin(f * 50F);
+            float f = ((float) (this.eating - 4) - partialTicks) / 32.0F;
+            return ((float) Math.PI / 5F) + 0.22F * Mth.sin(f * 5.7F);
         } else {
             return this.eating > 0 ? ((float) Math.PI / 5F) : clientPlayer.getXRot() * ((float) Math.PI / 180F);
         }
@@ -107,17 +107,14 @@ public class CowData {
         return Math.min(10F, 2.0F + (((float) eating - partialTicks) * 1.5f));
     }
 
-    public void unCow() {
-        isCow = false;
-        syncFlag();
-    }
-
     public boolean canEat(Block block) {
         return block instanceof GrassBlock
                 || block instanceof DoublePlantBlock
                 || block instanceof TallGrassBlock
                 || block instanceof FlowerBlock
-                || block instanceof SeagrassBlock;
+                || block instanceof SeagrassBlock
+                || block instanceof MossBlock
+                || block instanceof CropBlock;
     }
 
     public Block replaceBlock(Block block) {
@@ -125,7 +122,9 @@ public class CowData {
     }
 
     public ItemStack getFoodFor(Block block) {
-        return block instanceof GrassBlock ? highest : block instanceof DoublePlantBlock ? high : low;
+        return block instanceof GrassBlock ? highest :
+                block instanceof DoublePlantBlock || block instanceof MossBlock || block instanceof CropBlock ? high :
+                        low;
 
     }
 }

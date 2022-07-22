@@ -1,5 +1,6 @@
 package absolemjackdaw;
 
+import absolemjackdaw.item.RegisterItem;
 import absolemjackdaw.network.CowNetwork;
 import net.minecraftforge.fml.common.Mod;
 
@@ -9,5 +10,6 @@ public class CowSimulator {
 
     static {
         CowNetwork.init();
+        RegisterItem.init();
     }
 }
