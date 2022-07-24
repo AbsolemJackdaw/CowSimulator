@@ -1,5 +1,6 @@
 package absolemjackdaw.events;
 
+import absolemjackdaw.ConfigData;
 import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,7 +26,7 @@ public class EatGrassEvent {
                     } else if (cowData.isEating())
                         cowData.resetEating();
                     //exhaust cows faster so they eat more
-                    if (serverPlayer.level.random.nextInt(600) == 0) { //TODO config option
+                    if (ConfigData.exhaustion >= 0 && serverPlayer.level.random.nextInt(ConfigData.exhaustion) == 0) {
                         serverPlayer.getFoodData().setFoodLevel(Math.max(0, serverPlayer.getFoodData().getFoodLevel() - 1));
                         serverPlayer.getFoodData().setSaturation(Math.max(0, serverPlayer.getFoodData().getSaturationLevel() - 1));
                     }

@@ -34,19 +34,9 @@ public class CowPotion extends Potion {
         return true;
     }
 
-    @Override
-    public boolean allowedInCreativeTab(Item item, CreativeModeTab tab, boolean isDefaultTab) {
-        return true;
-    }
-
     public static class CowEffect extends MobEffect {
         public CowEffect() {
-            super(MobEffectCategory.NEUTRAL, 0x964B00);
-        }
-
-        @Override
-        public boolean isInstantenous() {
-            return true;
+            super(MobEffectCategory.NEUTRAL, 0x654321);
         }
 
         @Override
@@ -58,6 +48,11 @@ public class CowPotion extends Potion {
                     }
                 });
             }
+        }
+
+        @Override
+        public boolean isInstantenous() {
+            return true;
         }
     }
 }

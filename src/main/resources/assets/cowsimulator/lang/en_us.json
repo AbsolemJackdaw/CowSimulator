@@ -1,0 +1,7 @@
+{
+  "item.minecraft.potion.effect.cow_potion": "Potion Of Cow Simulation",
+  "item.minecraft.splash_potion.effect.cow_potion": "Splash Potion Of Cow Simulation",
+  "item.minecraft.lingering_potion.effect.cow_potion": "Lingering Potion of Cow Simulation",
+  "item.minecraft.tipped_arrow.effect.cow_potion": "Arrow of Cow Simulation",
+  "effect.cowsimulator.cow_effect" : "Cow Simulator"
+}
