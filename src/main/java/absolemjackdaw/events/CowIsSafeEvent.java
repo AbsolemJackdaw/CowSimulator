@@ -16,7 +16,7 @@ public class CowIsSafeEvent {
         if (event.getTarget() instanceof Player player) {
             CowData.get(player).ifPresent(cowData -> {
                 if (cowData.isClientCow(player) || cowData.isServerCow(player)) {
-                    if(event.getEntity() instanceof Mob mob){
+                    if (event.getEntity() instanceof Mob mob) {
                         mob.setTarget(null);
                     }
                 }

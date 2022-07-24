@@ -24,6 +24,21 @@ public class CowsAreDumbEvent {
         }
     }
 
+    public static void dontDoEvent(Player player, Event event) {
+        CowData.get(player).ifPresent(cowData -> {
+            if (cowData.isServerCow(player) || cowData.isClientCow(player)) {
+                event.setCanceled(true);
+                if (cowData.isServerCow(player))
+                    player.level.playSound(
+                            player instanceof ServerPlayer ? null : player, //null to play on server, player for client
+                            player.blockPosition(),
+                            SoundEvents.COW_AMBIENT,
+                            SoundSource.NEUTRAL,
+                            0.5f + player.level.random.nextFloat() / 2f, 1.0f);
+            }
+        });
+    }
+
     @SubscribeEvent
     public static void dontUseItems(PlayerInteractEvent.RightClickItem event) {
         dontDoEvent(event.getEntity(), event);
@@ -45,20 +60,5 @@ public class CowsAreDumbEvent {
         if (event.getEntity() instanceof Player player) {
             dontDoEvent(player, event);
         }
-    }
-
-    public static void dontDoEvent(Player player, Event event) {
-        CowData.get(player).ifPresent(cowData -> {
-            if (cowData.isServerCow(player) || cowData.isClientCow(player)) {
-                event.setCanceled(true);
-                if (cowData.isServerCow(player))
-                    player.level.playSound(
-                            player instanceof ServerPlayer ? null : player, //null to play on server, player for client
-                            player.blockPosition(),
-                            SoundEvents.COW_AMBIENT,
-                            SoundSource.NEUTRAL,
-                            0.5f + player.level.random.nextFloat() / 2f, 1.0f);
-            }
-        });
     }
 }

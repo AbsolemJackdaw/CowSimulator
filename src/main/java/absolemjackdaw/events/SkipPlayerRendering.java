@@ -30,6 +30,7 @@ public class SkipPlayerRendering {
 
     private static final ResourceLocation COW_LOCATION = new ResourceLocation("textures/entity/cow/cow.png");
     protected static CowModel<AbstractClientPlayer> cowModel;
+    private static float oldAngle = 0.0f;
 
     @SubscribeEvent
     public static void skip(RenderPlayerEvent.Pre event) {
@@ -105,26 +106,6 @@ public class SkipPlayerRendering {
         }
     }
 
-    @SubscribeEvent
-    public static void skip(RenderHandEvent event) {
-        CowData.get(ClientSidedCalls.getClientPlayer()).ifPresent(cowData -> {
-            if (cowData.isClientCow(ClientSidedCalls.getClientPlayer())) {
-                event.setCanceled(true);
-                event.getPoseStack().pushPose();
-                event.getPoseStack().translate(0, -0.7, -0.2);
-                event.getPoseStack().mulPose(new Quaternion(0, 0, 180, true));
-                event.getPoseStack().mulPose(new Quaternion(ClientSidedCalls.getClientPlayer().getXRot() * -1, 0, 0, true));
-                if (cowModel != null)
-                    cowModel.getHead().visible = false;
-                renderCow(cowData, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), 0, 0, event.getPartialTick());
-                event.getPoseStack().popPose();
-
-            }
-        });
-    }
-
-    private static float oldAngle = 0.0f;
-
     private static void renderCow(CowData cowData, PoseStack poseStack, MultiBufferSource buffer, int packedLight, float headX, float headY, float partialTick) {
         if (cowModel == null)
             cowModel = new CowModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.COW)) {
@@ -156,5 +137,23 @@ public class SkipPlayerRendering {
                 packedLight,
                 LivingEntityRenderer.getOverlayCoords(ClientSidedCalls.getClientPlayer(), 0.0F),
                 1f, 1f, 1f, 1f);
+    }
+
+    @SubscribeEvent
+    public static void skip(RenderHandEvent event) {
+        CowData.get(ClientSidedCalls.getClientPlayer()).ifPresent(cowData -> {
+            if (cowData.isClientCow(ClientSidedCalls.getClientPlayer())) {
+                event.setCanceled(true);
+                event.getPoseStack().pushPose();
+                event.getPoseStack().translate(0, -0.7, -0.2);
+                event.getPoseStack().mulPose(new Quaternion(0, 0, 180, true));
+                event.getPoseStack().mulPose(new Quaternion(ClientSidedCalls.getClientPlayer().getXRot() * -1, 0, 0, true));
+                if (cowModel != null)
+                    cowModel.getHead().visible = false;
+                renderCow(cowData, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), 0, 0, event.getPartialTick());
+                event.getPoseStack().popPose();
+
+            }
+        });
     }
 }
