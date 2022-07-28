@@ -72,10 +72,10 @@ public class SkipPlayerRendering {
                     if (player.hasPose(Pose.SLEEPING)) {
                         Direction direction = player.getBedOrientation();
                         float sleepDir = direction != null ? sleepDirectionToRotation(direction) : f;
-                        event.getPoseStack().mulPose(Vector3f.XP.rotationDegrees(sleepDir));
-                        event.getPoseStack().mulPose(Vector3f.ZP.rotationDegrees(90F));
-                        event.getPoseStack().mulPose(Vector3f.YP.rotationDegrees(270.0F));
-                        event.getPoseStack().translate(-0.3f, -1f, 0.5f);
+                        event.getPoseStack().mulPose(Vector3f.XP.rotationDegrees(00F));
+                        event.getPoseStack().mulPose(Vector3f.ZP.rotationDegrees(00F));
+                        event.getPoseStack().mulPose(Vector3f.YP.rotationDegrees(sleepDir));
+                        event.getPoseStack().translate(0f, -0.75f, 0.5f);
                     }
                 }
 
@@ -92,18 +92,12 @@ public class SkipPlayerRendering {
     }
 
     private static float sleepDirectionToRotation(Direction p_115329_) {
-        switch (p_115329_) {
-            case SOUTH:
-                return 90.0F;
-            case WEST:
-                return 0.0F;
-            case NORTH:
-                return 270.0F;
-            case EAST:
-                return 180.0F;
-            default:
-                return 0.0F;
-        }
+        return switch (p_115329_) {
+            case SOUTH -> 180.0F;
+            case NORTH -> 0.0F;
+            case EAST -> 270.0f;
+            default -> 90.0F;
+        };
     }
 
     private static void renderCow(CowData cowData, PoseStack poseStack, MultiBufferSource buffer, int packedLight, float headX, float headY, float partialTick) {
@@ -111,9 +105,34 @@ public class SkipPlayerRendering {
             cowModel = new CowModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.COW)) {
                 @Override
                 public void setupAnim(AbstractClientPlayer player, float p_103510_, float p_103511_, float p_103512_, float p_103513_, float p_103514_) {
+                    this.rightHindLeg.loadPose(rightHindLeg.getInitialPose());
+                    this.leftHindLeg.loadPose(leftHindLeg.getInitialPose());
+                    this.rightFrontLeg.loadPose(rightFrontLeg.getInitialPose());
+                    this.leftFrontLeg.loadPose(leftFrontLeg.getInitialPose());
+                    this.head.loadPose(head.getInitialPose());
+
                     super.setupAnim(player, p_103510_, p_103511_, p_103512_, p_103513_, p_103514_);
-                    if (player.isSleeping())
-                        cowModel.getHead().xRot = cowModel.getHead().yRot = 0;
+
+                    if (player.isSleeping()) {
+                        this.head.xRot = (float) Math.toRadians(90);
+                        this.head.zRot = (float) Math.toRadians(-20);
+                        this.head.yRot = (float) Math.toRadians(-15);
+                        this.head.setPos(0, 5, -8);
+
+                        this.leftFrontLeg.xRot = (float) Math.toRadians(90.0);
+                        this.leftFrontLeg.yRot = (float) Math.toRadians(-100.0);
+                        this.leftFrontLeg.setPos(6.0F, 11.9F, -8.0F);
+
+                        this.rightFrontLeg.xRot = (float) Math.toRadians(-90.0);
+                        this.rightFrontLeg.yRot = (float) Math.toRadians(-80.0);
+                        this.rightFrontLeg.setPos(-6.0F, 12.0F, -8.0F);
+
+                        this.leftHindLeg.setPos(6.0F, 3F, 7.0F);
+                        this.leftHindLeg.xRot = (float) Math.toRadians(-25.0);
+
+                        this.rightHindLeg.setPos(-6.0F, 3F, 7.0F);
+                        this.rightHindLeg.xRot = (float) Math.toRadians(-25.0);
+                    }
                 }
             };
         cowModel.young = false;
