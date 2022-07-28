@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.BedBlock;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -59,6 +60,13 @@ public class CowsAreDumbEvent {
     public static void dontPlaceBlock(BlockEvent.EntityPlaceEvent event) {
         if (event.getEntity() instanceof Player player) {
             dontDoEvent(player, event);
+        }
+    }
+
+    @SubscribeEvent
+    public static void dontspar(LivingAttackEvent event) {
+        if (event.getSource().getEntity() instanceof Player player) {
+            CowData.get(player).ifPresent(cowData -> event.setCanceled(cowData.isServerCow(player) || cowData.isClientCow(player)));
         }
     }
 }
