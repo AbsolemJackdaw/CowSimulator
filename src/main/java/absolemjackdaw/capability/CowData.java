@@ -25,6 +25,9 @@ public class CowData {
     private boolean isCow = false;
     private int eating = 0;
 
+    private int overAte;
+    private final int overAteMax = 10;
+
     public CowData(@Nullable ServerPlayer serverPlayer) {
         this.serverPlayer = serverPlayer;
     }
@@ -69,6 +72,18 @@ public class CowData {
         eating++;
         if (eating - 1 == 0) //only sync when eating is updated to 1. client side only has to know whether the cow is eating or not.
             syncEating(); //sync after counting up, the eating variable is passed on to the packet
+    }
+
+    public void updateEatSaturation(ServerPlayer player) {
+        if (player.getFoodData().getFoodLevel() >= 20)
+            overAte++;
+    }
+
+    public boolean ateTooMuch() {
+        boolean flag = overAte >= overAteMax;
+        if (flag)
+            overAte = 0;
+        return flag;
     }
 
     public void setClientEating(int eating) {
