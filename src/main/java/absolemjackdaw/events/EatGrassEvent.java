@@ -4,8 +4,10 @@ import absolemjackdaw.ConfigData;
 import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -50,6 +52,14 @@ public class EatGrassEvent {
                     ItemStack food = cowData.getFoodFor(event.getState().getBlock());
                     player.getFoodData().eat(food.getItem(), food, player);
                     player.level.setBlockAndUpdate(event.getPos(), cowData.replaceBlock(event.getState().getBlock()).defaultBlockState());
+                    cowData.updateEatSaturation((ServerPlayer) player);
+                    if (cowData.ateTooMuch()) {
+                        player.level.addFreshEntity(new ItemEntity(player.level,
+                                player.blockPosition().getX(),
+                                player.blockPosition().getY(),
+                                player.blockPosition().getZ(),
+                                new ItemStack(Items.BONE_MEAL, 1 + player.level.random.nextInt(0,2))));
+                    }
                 }
             }
         });
