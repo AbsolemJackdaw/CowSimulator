@@ -1,5 +1,6 @@
 package absolemjackdaw.network;
 
+import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
 import absolemjackdaw.client.ClientSidedCalls;
 import net.minecraft.network.FriendlyByteBuf;
@@ -10,6 +11,7 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class CSyncCowData {
+    private final ResourceLocation PLAYER = new ResourceLocation(CowSimulator.MODID, "player");
     private ResourceLocation animal = null;
     private Integer eating = null;
 
@@ -23,16 +25,16 @@ public class CSyncCowData {
     public void decode(FriendlyByteBuf buf) {
         int ord = buf.readInt();
         STATUS status = STATUS.values()[ord];
+        if (status == STATUS.TYPE || status == STATUS.BOTH) {
+            animal = new ResourceLocation(buf.readUtf(255));
+        }
         if (status == STATUS.INT || status == STATUS.BOTH) {
             eating = buf.readInt();
-        }
-        if (status == STATUS.TYPE || status == STATUS.BOTH) {
-            animal = buf.readResourceLocation();
         }
     }
 
     public CSyncCowData with(ResourceLocation animal) {
-        this.animal = animal;
+        this.animal = animal == null ? PLAYER : animal;
         return this;
     }
 
@@ -44,7 +46,7 @@ public class CSyncCowData {
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeInt(STATUS.get(animal, eating).ordinal());
         if (animal != null)
-            buffer.writeResourceLocation(animal);
+            buffer.writeUtf(animal.toString(), 255);
         if (eating != null)
             buffer.writeInt(eating);
     }
@@ -54,7 +56,7 @@ public class CSyncCowData {
             Player player = ClientSidedCalls.getClientPlayer();
             CowData.get(player).ifPresent(cowData -> {
                 if (animal != null)
-                    cowData.becomeAnimal(animal);
+                    cowData.becomeAnimal(animal.equals(PLAYER) ? null : animal);
                 if (eating != null)
                     cowData.setClientEating(eating);
             });

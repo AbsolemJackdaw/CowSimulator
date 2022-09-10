@@ -32,7 +32,7 @@ public class Cow extends AnimalCurse {
 
     public CowModel<AbstractClientPlayer> cowModel() {
         if (cowModel == null)
-            cowModel = new CowModel<AbstractClientPlayer>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.COW)) {
+            cowModel = new CowModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.COW)) {
 
                 @Override
                 public void setupAnim(AbstractClientPlayer player, float p_103510_, float p_103511_, float p_103512_, float p_103513_, float p_103514_) {

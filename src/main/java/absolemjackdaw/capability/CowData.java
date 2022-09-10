@@ -43,13 +43,14 @@ public class CowData {
     public CompoundTag write() {
         CompoundTag nbt = new CompoundTag();
         nbt.putBoolean("isCow", isAnimal);
-        nbt.putString("animal", animal.toString());
+        nbt.putString("animal", animal == null ? "" : animal.toString());
         return nbt;
     }
 
     public void read(CompoundTag nbt) {
         this.isAnimal = nbt.getBoolean("isCow");
-        this.animal = new ResourceLocation(nbt.getString("animal"));
+        String name = nbt.getString("animal");
+        this.animal = name.isBlank() ? null : new ResourceLocation(name);
     }
 
     /**
@@ -100,12 +101,20 @@ public class CowData {
     }
 
     public void becomeAnimal(ResourceLocation animal) {
+        this.isAnimal = animal != null;//player == null
         this.animal = animal;
         syncFlag();
     }
 
     public ResourceLocation getAnimalIdentifier() {
         return animal;
+    }
+
+    /**
+     * returns true if the player is an animal and of the passed type of animal
+     */
+    public boolean is(ResourceLocation animal) {
+        return this.isAnimal && this.animal != null && this.animal.equals(animal);
     }
 
     private void syncFlag() {

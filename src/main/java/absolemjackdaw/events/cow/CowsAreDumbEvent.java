@@ -1,8 +1,8 @@
 package absolemjackdaw.events.cow;
 
+import absolemjackdaw.CowApi;
 import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -27,11 +27,11 @@ public class CowsAreDumbEvent {
 
     public static void dontDoEvent(Player player, Event event) {
         CowData.get(player).ifPresent(cowData -> {
-            if (cowData.isServerAnimal(player) || cowData.isClientAnimal(player)) {
+            if (cowData.is(CowApi.cowAnimal)) {
                 event.setCanceled(true);
                 if (cowData.isServerAnimal(player))
                     player.level.playSound(
-                            player instanceof ServerPlayer ? null : player, //null to play on server, player for client
+                            null, //null to play on server, player for client
                             player.blockPosition(),
                             SoundEvents.COW_AMBIENT,
                             SoundSource.NEUTRAL,
@@ -66,7 +66,7 @@ public class CowsAreDumbEvent {
     @SubscribeEvent
     public static void dontspar(LivingAttackEvent event) {
         if (event.getSource().getEntity() instanceof Player player) {
-            CowData.get(player).ifPresent(cowData -> event.setCanceled(cowData.isServerAnimal(player) || cowData.isClientAnimal(player)));
+            CowData.get(player).ifPresent(cowData -> event.setCanceled(cowData.is(CowApi.cowAnimal)));
         }
     }
 }

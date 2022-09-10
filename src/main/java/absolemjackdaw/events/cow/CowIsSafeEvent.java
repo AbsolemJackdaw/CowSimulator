@@ -1,5 +1,6 @@
 package absolemjackdaw.events.cow;
 
+import absolemjackdaw.CowApi;
 import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
 import net.minecraft.world.entity.Mob;
@@ -15,7 +16,7 @@ public class CowIsSafeEvent {
     public static void beSafe(LivingSetAttackTargetEvent event) {
         if (event.getTarget() instanceof Player player) {
             CowData.get(player).ifPresent(cowData -> {
-                if (cowData.isClientAnimal(player) || cowData.isServerAnimal(player)) {
+                if (cowData.is(CowApi.cowAnimal)) {
                     if (event.getEntity() instanceof Mob mob) {
                         mob.setTarget(null);
                     }

@@ -36,8 +36,8 @@ public class AnimalPotion extends Potion {
     public static class AnimalEffect extends MobEffect {
         private final ResourceLocation animal;
 
-        public AnimalEffect(ResourceLocation animal) {
-            super(MobEffectCategory.NEUTRAL, 0x654321);
+        public AnimalEffect(ResourceLocation animal, int color) {
+            super(MobEffectCategory.NEUTRAL, color);
             this.animal = animal;
         }
 

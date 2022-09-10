@@ -1,6 +1,7 @@
 package absolemjackdaw.events.cow;
 
 import absolemjackdaw.ConfigData;
+import absolemjackdaw.CowApi;
 import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,7 +22,7 @@ public class EatGrassEvent {
     public static void eat(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         CowData.get(player).ifPresent(cowData -> {
-            if (cowData.isServerAnimal(player)) {
+            if (cowData.isServerAnimal(player) && cowData.is(CowApi.cowAnimal)) {
                 if (player instanceof ServerPlayer serverPlayer) {
                     if (serverPlayer.gameMode.isDestroyingBlock) {
                         cowData.eat();
@@ -46,7 +47,7 @@ public class EatGrassEvent {
     public static void eat(BlockEvent.BreakEvent event) { //fired before block is broken.
         Player player = event.getPlayer();
         CowData.get(player).ifPresent(cowData -> {
-            if (cowData.isServerAnimal(player) && !player.isCreative()) {
+            if (cowData.isServerAnimal(player) && !player.isCreative() && cowData.is(CowApi.cowAnimal)) {
                 event.setCanceled(true);
                 if (cowData.canEat(event.getState().getBlock())) {
                     ItemStack food = cowData.getFoodFor(event.getState().getBlock());
@@ -58,7 +59,7 @@ public class EatGrassEvent {
                                 player.blockPosition().getX(),
                                 player.blockPosition().getY(),
                                 player.blockPosition().getZ(),
-                                new ItemStack(Items.BONE_MEAL, 1 + player.level.random.nextInt(0,2))));
+                                new ItemStack(Items.BONE_MEAL, 1 + player.level.random.nextInt(0, 2))));
                     }
                 }
             }
@@ -69,7 +70,7 @@ public class EatGrassEvent {
     public static void eat(PlayerEvent.BreakSpeed event) {
         Player player = event.getEntity();
         CowData.get(player).ifPresent(cowData -> {
-            if (cowData.isServerAnimal(player) || cowData.isClientAnimal(player)) {
+            if (cowData.is(CowApi.cowAnimal)) {
                 event.setNewSpeed(cowData.canEat(event.getState().getBlock()) ? 0.5f : 0.0f);
             }
         });

@@ -22,10 +22,12 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = CowSimulator.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CowSimulator {
     public static final String MODID = "cowsimulator";
+    public static final Map<Item, Supplier<Potion>> brew = new HashMap<>();
 
     static {
         CowNetwork.init();
         RegisterItem.init();
+        CowApi.classLoad();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CowSimulator::modConfig);
         ModLoadingContext modLoadingContext = ModLoadingContext.get();
@@ -37,8 +39,6 @@ public class CowSimulator {
         if (config.getSpec() == ConfigData.SERVER_SPEC)
             ConfigData.refreshServer();
     }
-
-    public static final Map<Item, Supplier<Potion>> brew = new HashMap<>();
 
     @SubscribeEvent
     public static void setup(FMLCommonSetupEvent event) {
