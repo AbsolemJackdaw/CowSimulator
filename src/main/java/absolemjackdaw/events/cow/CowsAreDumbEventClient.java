@@ -1,4 +1,4 @@
-package absolemjackdaw.events;
+package absolemjackdaw.events.cow;
 
 import absolemjackdaw.CowSimulator;
 import absolemjackdaw.client.ClientSidedCalls;

@@ -3,13 +3,14 @@ package absolemjackdaw.network;
 import absolemjackdaw.capability.CowData;
 import absolemjackdaw.client.ClientSidedCalls;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
 public class CSyncCowData {
-    private Boolean isCow = null;
+    private ResourceLocation animal = null;
     private Integer eating = null;
 
     public CSyncCowData() {
@@ -22,18 +23,16 @@ public class CSyncCowData {
     public void decode(FriendlyByteBuf buf) {
         int ord = buf.readInt();
         STATUS status = STATUS.values()[ord];
-        switch (status) {
-            case INT -> eating = buf.readInt();
-            case BOOL -> isCow = buf.readBoolean();
-            case BOTH -> {
-                isCow = buf.readBoolean();
-                eating = buf.readInt();
-            }
+        if (status == STATUS.INT || status == STATUS.BOTH) {
+            eating = buf.readInt();
+        }
+        if (status == STATUS.TYPE || status == STATUS.BOTH) {
+            animal = buf.readResourceLocation();
         }
     }
 
-    public CSyncCowData with(boolean isCow) {
-        this.isCow = isCow;
+    public CSyncCowData with(ResourceLocation animal) {
+        this.animal = animal;
         return this;
     }
 
@@ -43,9 +42,9 @@ public class CSyncCowData {
     }
 
     public void encode(FriendlyByteBuf buffer) {
-        buffer.writeInt(STATUS.get(isCow, eating).ordinal());
-        if (isCow != null)
-            buffer.writeBoolean(isCow);
+        buffer.writeInt(STATUS.get(animal, eating).ordinal());
+        if (animal != null)
+            buffer.writeResourceLocation(animal);
         if (eating != null)
             buffer.writeInt(eating);
     }
@@ -54,8 +53,8 @@ public class CSyncCowData {
         context.get().enqueueWork(() -> {
             Player player = ClientSidedCalls.getClientPlayer();
             CowData.get(player).ifPresent(cowData -> {
-                if (isCow != null)
-                    cowData.turnCow(isCow);
+                if (animal != null)
+                    cowData.becomeAnimal(animal);
                 if (eating != null)
                     cowData.setClientEating(eating);
             });
@@ -65,12 +64,12 @@ public class CSyncCowData {
 
     private enum STATUS {
         BOTH,
-        BOOL,
+        TYPE,
         INT,
         NONE;
 
-        public static STATUS get(Boolean b, Integer i) {
-            return b != null && i != null ? BOTH : b != null ? BOOL : i != null ? INT : NONE;
+        public static STATUS get(ResourceLocation b, Integer i) {
+            return b != null && i != null ? BOTH : b != null ? TYPE : i != null ? INT : NONE;
         }
     }
 }

@@ -1,4 +1,4 @@
-package absolemjackdaw.events;
+package absolemjackdaw.events.cow;
 
 import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
@@ -27,9 +27,9 @@ public class CowsAreDumbEvent {
 
     public static void dontDoEvent(Player player, Event event) {
         CowData.get(player).ifPresent(cowData -> {
-            if (cowData.isServerCow(player) || cowData.isClientCow(player)) {
+            if (cowData.isServerAnimal(player) || cowData.isClientAnimal(player)) {
                 event.setCanceled(true);
-                if (cowData.isServerCow(player))
+                if (cowData.isServerAnimal(player))
                     player.level.playSound(
                             player instanceof ServerPlayer ? null : player, //null to play on server, player for client
                             player.blockPosition(),
@@ -66,7 +66,7 @@ public class CowsAreDumbEvent {
     @SubscribeEvent
     public static void dontspar(LivingAttackEvent event) {
         if (event.getSource().getEntity() instanceof Player player) {
-            CowData.get(player).ifPresent(cowData -> event.setCanceled(cowData.isServerCow(player) || cowData.isClientCow(player)));
+            CowData.get(player).ifPresent(cowData -> event.setCanceled(cowData.isServerAnimal(player) || cowData.isClientAnimal(player)));
         }
     }
 }

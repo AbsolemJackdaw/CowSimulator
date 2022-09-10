@@ -1,4 +1,4 @@
-package absolemjackdaw.events;
+package absolemjackdaw.events.cow;
 
 import absolemjackdaw.ConfigData;
 import absolemjackdaw.CowSimulator;
@@ -21,7 +21,7 @@ public class EatGrassEvent {
     public static void eat(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         CowData.get(player).ifPresent(cowData -> {
-            if (cowData.isServerCow(player)) {
+            if (cowData.isServerAnimal(player)) {
                 if (player instanceof ServerPlayer serverPlayer) {
                     if (serverPlayer.gameMode.isDestroyingBlock) {
                         cowData.eat();
@@ -36,7 +36,7 @@ public class EatGrassEvent {
             }
             //update eating counter instead of syncing it with a packet every tick
             //only needs to count when the client is notified/synced that we're effectively eating on the server
-            else if (cowData.isClientCow(player) && cowData.isEating()) {
+            else if (cowData.isClientAnimal(player) && cowData.isEating()) {
                 cowData.eat(); //eat syncs to client if we're on the server, which isn't the case here, so it will fail to pass the server check and not send a packet
             }
         });
@@ -46,7 +46,7 @@ public class EatGrassEvent {
     public static void eat(BlockEvent.BreakEvent event) { //fired before block is broken.
         Player player = event.getPlayer();
         CowData.get(player).ifPresent(cowData -> {
-            if (cowData.isServerCow(player) && !player.isCreative()) {
+            if (cowData.isServerAnimal(player) && !player.isCreative()) {
                 event.setCanceled(true);
                 if (cowData.canEat(event.getState().getBlock())) {
                     ItemStack food = cowData.getFoodFor(event.getState().getBlock());
@@ -69,7 +69,7 @@ public class EatGrassEvent {
     public static void eat(PlayerEvent.BreakSpeed event) {
         Player player = event.getEntity();
         CowData.get(player).ifPresent(cowData -> {
-            if (cowData.isServerCow(player) || cowData.isClientCow(player)) {
+            if (cowData.isServerAnimal(player) || cowData.isClientAnimal(player)) {
                 event.setNewSpeed(cowData.canEat(event.getState().getBlock()) ? 0.5f : 0.0f);
             }
         });

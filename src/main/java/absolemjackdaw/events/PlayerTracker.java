@@ -31,7 +31,7 @@ public class PlayerTracker {
     @SubscribeEvent
     public static void track(PlayerEvent.PlayerRespawnEvent event) {
         if (event.getEntity() instanceof ServerPlayer player)
-            CowData.get(player).ifPresent(cowData -> cowData.turnCow(false));
+            CowData.get(player).ifPresent(cowData -> cowData.becomeAnimal(null));
     }
 
     @SubscribeEvent

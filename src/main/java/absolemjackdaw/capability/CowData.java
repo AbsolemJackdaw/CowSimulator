@@ -3,6 +3,7 @@ package absolemjackdaw.capability;
 import absolemjackdaw.network.CSyncCowData;
 import absolemjackdaw.network.CowNetwork;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,11 +23,13 @@ public class CowData {
     private static final ItemStack highest = new ItemStack(Items.CARROT, 1);
     @Nullable
     private final ServerPlayer serverPlayer;
-    private boolean isCow = false;
+    private boolean isAnimal = false;
     private int eating = 0;
 
     private int overAte;
     private final int overAteMax = 10;
+
+    private ResourceLocation animal = new ResourceLocation("");
 
     public CowData(@Nullable ServerPlayer serverPlayer) {
         this.serverPlayer = serverPlayer;
@@ -39,23 +42,25 @@ public class CowData {
 
     public CompoundTag write() {
         CompoundTag nbt = new CompoundTag();
-        nbt.putBoolean("isCow", isCow);
+        nbt.putBoolean("isCow", isAnimal);
+        nbt.putString("animal", animal.toString());
         return nbt;
     }
 
     public void read(CompoundTag nbt) {
-        this.isCow = nbt.getBoolean("isCow");
+        this.isAnimal = nbt.getBoolean("isCow");
+        this.animal = new ResourceLocation(nbt.getString("animal"));
     }
 
     /**
      * server logic
      */
-    public boolean isServerCow(Player player) {
-        return isCow && !player.level.isClientSide();
+    public boolean isServerAnimal(Player player) {
+        return isAnimal && !player.level.isClientSide();
     }
 
-    public boolean isClientCow(Player player) {
-        return isCow && player.level.isClientSide();
+    public boolean isClientAnimal(Player player) {
+        return isAnimal && player.level.isClientSide();
     }
 
     public void resetEating() {
@@ -94,19 +99,23 @@ public class CowData {
         return eating > 0;
     }
 
-    public void turnCow(boolean flag) {
-        isCow = flag;
+    public void becomeAnimal(ResourceLocation animal) {
+        this.animal = animal;
         syncFlag();
+    }
+
+    public ResourceLocation getAnimalIdentifier() {
+        return animal;
     }
 
     private void syncFlag() {
         if (serverPlayer != null)
-            CowNetwork.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CSyncCowData().with(isCow));
+            CowNetwork.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CSyncCowData().with(animal));
     }
 
     public void sync() {
         if (serverPlayer != null)
-            CowNetwork.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CSyncCowData().with(eating).with(isCow));
+            CowNetwork.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CSyncCowData().with(eating).with(animal));
     }
 
     public float getHeadEatAngleScale(LivingEntity clientPlayer, float partialTicks) { //use livingentity to prevent mishaps on server side with clientplayer

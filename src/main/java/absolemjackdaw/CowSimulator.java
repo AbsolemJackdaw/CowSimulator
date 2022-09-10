@@ -1,8 +1,10 @@
 package absolemjackdaw;
 
-import absolemjackdaw.item.CowBrew;
+import absolemjackdaw.item.AnimalBrew;
 import absolemjackdaw.item.RegisterItem;
 import absolemjackdaw.network.CowNetwork;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -11,6 +13,10 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
 @Mod(CowSimulator.MODID)
 @Mod.EventBusSubscriber(modid = CowSimulator.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -32,10 +38,15 @@ public class CowSimulator {
             ConfigData.refreshServer();
     }
 
+    public static final Map<Item, Supplier<Potion>> brew = new HashMap<>();
+
     @SubscribeEvent
     public static void setup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            BrewingRecipeRegistry.addRecipe(new CowBrew());
+            brew.forEach((item, potion) -> {
+                BrewingRecipeRegistry.addRecipe(new AnimalBrew(item, potion.get()));
+
+            });
         });
     }
 }

@@ -1,4 +1,4 @@
-package absolemjackdaw.events;
+package absolemjackdaw.events.cow;
 
 import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
@@ -27,7 +27,7 @@ public class CowBreedEvent {
         Player player = event.getEntity();
         if (event.getTarget() instanceof Cow cow && event.getHand().equals(InteractionHand.MAIN_HAND)) {
             CowData.get(player).ifPresent(cowData -> {
-                if (cowData.isServerCow(player)) { //is not cow and is not client
+                if (cowData.isServerAnimal(player)) { //is not cow and is not client
                     if (!cow.isInLove())
                         cow.setInLove(player);
                 }
@@ -39,7 +39,7 @@ public class CowBreedEvent {
     public static void breed(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         CowData.get(player).ifPresent(cowData -> {
-            if (player instanceof ServerPlayer serverPlayer && cowData.isServerCow(player)) {
+            if (player instanceof ServerPlayer serverPlayer && cowData.isServerAnimal(player)) {
                 List<Cow> mates = player.level.getEntitiesOfClass(Cow.class, player.getBoundingBox());
                 if (!mates.isEmpty())
                     for (Cow mate : mates)

@@ -1,4 +1,4 @@
-package absolemjackdaw.events;
+package absolemjackdaw.events.cow;
 
 import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
@@ -15,7 +15,7 @@ public class CowIsSafeEvent {
     public static void beSafe(LivingSetAttackTargetEvent event) {
         if (event.getTarget() instanceof Player player) {
             CowData.get(player).ifPresent(cowData -> {
-                if (cowData.isClientCow(player) || cowData.isServerCow(player)) {
+                if (cowData.isClientAnimal(player) || cowData.isServerAnimal(player)) {
                     if (event.getEntity() instanceof Mob mob) {
                         mob.setTarget(null);
                     }
