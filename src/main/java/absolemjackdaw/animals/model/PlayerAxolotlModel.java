@@ -135,7 +135,7 @@ public class PlayerAxolotlModel<T extends AbstractClientPlayer> extends AgeableL
     }
 
     private void setupGroundCrawlingAnimation(float eval, float p_170420_) {
-        float f = eval * 0.11F;
+        float f = eval * 0.75F;
         float f1 = Mth.cos(f);
         float f2 = (f1 * f1 - 2.0F * f1) / 5.0F;
         float f3 = 0.7F * f1;

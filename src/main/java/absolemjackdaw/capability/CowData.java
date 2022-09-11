@@ -1,5 +1,7 @@
 package absolemjackdaw.capability;
 
+import absolemjackdaw.CowApi;
+import absolemjackdaw.client.ClientSidedCalls;
 import absolemjackdaw.network.CSyncCowData;
 import absolemjackdaw.network.CowNetwork;
 import net.minecraft.nbt.CompoundTag;
@@ -26,8 +28,13 @@ public class CowData {
     private boolean isAnimal = false;
     private int eating = 0;
 
-    private int overAte;
-    private final int overAteMax = 10;
+    /**not saved*/
+    public int intFlag, intFlag2 = 0;
+
+
+    public void resetCustoms() {
+        intFlag2 = intFlag = 0;
+    }
 
     private ResourceLocation animal = new ResourceLocation("");
 
@@ -80,18 +87,6 @@ public class CowData {
             syncEating(); //sync after counting up, the eating variable is passed on to the packet
     }
 
-    public void updateEatSaturation(ServerPlayer player) {
-        if (player.getFoodData().getFoodLevel() >= 20)
-            overAte++;
-    }
-
-    public boolean ateTooMuch() {
-        boolean flag = overAte >= overAteMax;
-        if (flag)
-            overAte = 0;
-        return flag;
-    }
-
     public void setClientEating(int eating) {
         this.eating = eating;
     }
@@ -102,6 +97,7 @@ public class CowData {
 
     public void becomeAnimal(ResourceLocation animal) {
         this.isAnimal = animal != null;//player == null
+        CowApi.fireEvent(serverPlayer == null ? ClientSidedCalls.getClientPlayer() : serverPlayer, isAnimal);
         this.animal = animal;
         syncFlag();
     }
@@ -138,16 +134,6 @@ public class CowData {
 
     public float getHeadEatPositionScale(float partialTicks) {
         return Math.min(10F, 2.0F + (((float) eating - partialTicks) * 1.5f));
-    }
-
-    public boolean canEat(Block block) {
-        return block instanceof GrassBlock
-                || block instanceof DoublePlantBlock
-                || block instanceof TallGrassBlock
-                || block instanceof FlowerBlock
-                || block instanceof SeagrassBlock
-                || block instanceof MossBlock
-                || block instanceof CropBlock;
     }
 
     public Block replaceBlock(Block block) {

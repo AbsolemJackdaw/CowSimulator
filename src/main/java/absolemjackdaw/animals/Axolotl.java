@@ -71,7 +71,7 @@ public class Axolotl extends AnimalCurse {
         }
 
         float headX = Mth.lerp(partialTick, player.xRotO, player.getXRot());
-        //TODO getModel().getHead().visible = true;
+        getModel().getHead().visible = true;
         poseStack.translate(0, 1.5f, 0);
         poseStack.mulPose(new Quaternion(180, 0, 0, true));
         poseStack.mulPose(new Quaternion(0, f, 0, true));
@@ -81,6 +81,12 @@ public class Axolotl extends AnimalCurse {
 
     @Override
     public void renderBody(CowData data, InteractionHand hand, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float partialTick, float interpolatedPitch, float swingProgress, float equipProgress, ItemStack stack) {
+        poseStack.translate(0, -0.4, 1.0);
+        poseStack.mulPose(new Quaternion(0, 0, 180, true));
+        poseStack.mulPose(new Quaternion(ClientSidedCalls.getClientPlayer().getXRot() * -1, 0, 0, true));
+        if (getModel() != null)
+            getModel().getHead().visible = false;
+        renderAxolotl(data, poseStack, multiBufferSource, packedLight, 0, 0, partialTick);
 
     }
 

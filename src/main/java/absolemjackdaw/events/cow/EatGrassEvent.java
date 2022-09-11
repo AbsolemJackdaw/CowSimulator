@@ -9,6 +9,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -49,12 +50,14 @@ public class EatGrassEvent {
         CowData.get(player).ifPresent(cowData -> {
             if (cowData.isServerAnimal(player) && !player.isCreative() && cowData.is(CowApi.cowAnimal)) {
                 event.setCanceled(true);
-                if (cowData.canEat(event.getState().getBlock())) {
+                if (canEat(event.getState().getBlock())) {
                     ItemStack food = cowData.getFoodFor(event.getState().getBlock());
                     player.getFoodData().eat(food.getItem(), food, player);
                     player.level.setBlockAndUpdate(event.getPos(), cowData.replaceBlock(event.getState().getBlock()).defaultBlockState());
-                    cowData.updateEatSaturation((ServerPlayer) player);
-                    if (cowData.ateTooMuch()) {
+                    if (player.getFoodData().getFoodLevel() >= 20)
+                        cowData.intFlag++;
+                    if (cowData.intFlag > 10) {
+                        cowData.intFlag = 0;
                         player.level.addFreshEntity(new ItemEntity(player.level,
                                 player.blockPosition().getX(),
                                 player.blockPosition().getY(),
@@ -71,8 +74,18 @@ public class EatGrassEvent {
         Player player = event.getEntity();
         CowData.get(player).ifPresent(cowData -> {
             if (cowData.is(CowApi.cowAnimal)) {
-                event.setNewSpeed(cowData.canEat(event.getState().getBlock()) ? 0.5f : 0.0f);
+                event.setNewSpeed(canEat(event.getState().getBlock()) ? 0.5f : 0.0f);
             }
         });
+    }
+
+    private static boolean canEat(Block block) {
+        return block instanceof GrassBlock
+                || block instanceof DoublePlantBlock
+                || block instanceof TallGrassBlock
+                || block instanceof FlowerBlock
+                || block instanceof SeagrassBlock
+                || block instanceof MossBlock
+                || block instanceof CropBlock;
     }
 }
