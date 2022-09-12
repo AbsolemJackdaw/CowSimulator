@@ -72,7 +72,7 @@ public class Axolotl extends AnimalChanger {
         }
         getModel().renderToBuffer(
                 poseStack,
-                buffer.getBuffer(RenderType.entityCutout(getTexture())),
+                buffer.getBuffer(RenderType.entityTranslucent(getTexture())),
                 packedLight,
                 LivingEntityRenderer.getOverlayCoords(ClientSidedCalls.getClientPlayer(), 0.0F),
                 1f, 1f, 1f, 1f);
