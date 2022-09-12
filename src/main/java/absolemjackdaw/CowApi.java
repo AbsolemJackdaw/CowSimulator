@@ -1,6 +1,6 @@
 package absolemjackdaw;
 
-import absolemjackdaw.animals.AnimalCurse;
+import absolemjackdaw.animals.AnimalChanger;
 import absolemjackdaw.animals.AnimalRegistry;
 import absolemjackdaw.animals.Axolotl;
 import absolemjackdaw.animals.Cow;
@@ -30,7 +30,7 @@ public class CowApi {
         register(new Axolotl(), axolotlAnimal, Items.KELP, 0xf983fb);
     }
 
-    public static void register(AnimalCurse curse, ResourceLocation animalIdentifier, Item potionIngredient, int color) {
+    public static void register(AnimalChanger curse, ResourceLocation animalIdentifier, Item potionIngredient, int color) {
         RegistryObject<MobEffect> animalEffect = RegisterItem.effectRegistry.register(String.format("%s_effect", animalIdentifier.getPath()), () -> new AnimalPotion.AnimalEffect(animalIdentifier, color));
 
         String potionName = String.format("%s_potion", animalIdentifier.getPath());

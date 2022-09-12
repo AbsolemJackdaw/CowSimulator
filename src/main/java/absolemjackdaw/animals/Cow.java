@@ -17,22 +17,21 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class Cow extends AnimalCurse {
-    private CowModel<AbstractClientPlayer> cowModel;
+public class Cow extends AnimalChanger {
+    private CowModel<AbstractClientPlayer> model;
     private static float oldAngle = 0.0f;
 
     public Cow() {
         super(new ResourceLocation("textures/entity/cow/cow.png"));
     }
 
-    public CowModel<AbstractClientPlayer> cowModel() {
-        if (cowModel == null)
-            cowModel = new CowModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.COW)) {
+    public CowModel<AbstractClientPlayer> getModel() {
+        if (model == null)
+            model = new CowModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.COW)) {
 
                 @Override
                 public void setupAnim(AbstractClientPlayer player, float p_103510_, float p_103511_, float p_103512_, float p_103513_, float p_103514_) {
@@ -66,57 +65,28 @@ public class Cow extends AnimalCurse {
                     }
                 }
             };
-        return cowModel;
+        return model;
     }
 
     @Override
-    public void render(CowData cowData, Player player, PlayerRenderer renderer, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight) {
-        boolean shouldSit = player.isPassenger() && (player.getVehicle() != null && player.getVehicle().shouldRiderSit());
-        if (player.isSleeping())
-            player.yBodyRot = player.yBodyRotO = 180;
+    public void render(CowData data, Player player, PlayerRenderer renderer, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight) {
+        super.render(data, player, renderer, partialTick, poseStack, multiBufferSource, packedLight);
+    }
 
-        float f = Mth.rotLerp(partialTick, player.yBodyRotO, player.yBodyRot);
-        float f1 = Mth.rotLerp(partialTick, player.yHeadRotO, player.yHeadRot);
-        float headY = f1 - f;
-
-        if (shouldSit && player.getVehicle() instanceof LivingEntity) {
-            LivingEntity livingentity = (LivingEntity) player.getVehicle();
-            f = Mth.rotLerp(partialTick, livingentity.yBodyRotO, livingentity.yBodyRot);
-            headY = f1 - f;
-            float f3 = Mth.wrapDegrees(headY);
-            if (f3 < -85.0F) {
-                f3 = -85.0F;
-            }
-
-            if (f3 >= 85.0F) {
-                f3 = 85.0F;
-            }
-
-            f = f1 - f3;
-            if (f3 * f3 > 2500.0F) {
-                f += f3 * 0.2F;
-            }
-
-            headY = f1 - f;
-        }
-
+    @Override
+    public void renderSpecific(CowData cowData, Player player, PlayerRenderer renderer, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float headX, float headY, float bodyLerpY) {
         if (player.isSleeping()) {
             if (player.hasPose(Pose.SLEEPING)) {
                 Direction direction = player.getBedOrientation();
-                float sleepDir = direction != null ? sleepDirectionToRotation(direction) : f;
+                float sleepDir = direction != null ? sleepDirectionToRotation(direction) : bodyLerpY;
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(00F));
                 poseStack.mulPose(Vector3f.ZP.rotationDegrees(00F));
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(sleepDir));
-                poseStack.translate(0f, -0.75f, 0.5f);
+                poseStack.translate(0f, 0.75f, 0.5f);
             }
         }
-
-        float headX = Mth.lerp(partialTick, player.xRotO, player.getXRot());
-        cowModel().getHead().visible = true;
-        poseStack.translate(0, 1.5f, 0);
-        poseStack.mulPose(new Quaternion(180, 0, 0, true));
-        poseStack.mulPose(new Quaternion(0, f, 0, true));
-        cowModel().getHead().y = 2.0f;
+        getModel().getHead().visible = true;
+        getModel().getHead().y = 2.0f;
         renderCow(cowData, poseStack, multiBufferSource, packedLight, headX, headY, partialTick);
     }
 
@@ -124,8 +94,8 @@ public class Cow extends AnimalCurse {
         return switch (p_115329_) {
             case SOUTH -> 180.0F;
             case NORTH -> 0.0F;
-            case EAST -> 270.0f;
-            default -> 90.0F;
+            case EAST -> 90.0f;
+            default -> 270.0F;
         };
     }
 
@@ -134,29 +104,29 @@ public class Cow extends AnimalCurse {
         poseStack.translate(0, -0.7, -0.2);
         poseStack.mulPose(new Quaternion(0, 0, 180, true));
         poseStack.mulPose(new Quaternion(ClientSidedCalls.getClientPlayer().getXRot() * -1, 0, 0, true));
-        if (cowModel != null)
-            cowModel.getHead().visible = false;
+        if (getModel() != null)
+            getModel().getHead().visible = false;
         renderCow(cowData, poseStack, multiBufferSource, packedLight, 0, 0, partialTick);
 
     }
 
     private void renderCow(CowData cowData, PoseStack poseStack, MultiBufferSource buffer, int packedLight, float headX, float headY, float partialTick) {
-        cowModel.young = false;
+        getModel().young = false;
         float limbSwingPower = Mth.lerp(partialTick, ClientSidedCalls.getClientPlayer().animationSpeedOld, ClientSidedCalls.getClientPlayer().animationSpeed);
         float limbSwing = ClientSidedCalls.getClientPlayer().animationPosition;
         if (limbSwingPower > 1.0F) {
             limbSwingPower = 1.0F;
         }
-        cowModel.setupAnim((AbstractClientPlayer) ClientSidedCalls.getClientPlayer(), limbSwing, limbSwingPower, 0, headY, headX);
+        getModel().setupAnim((AbstractClientPlayer) ClientSidedCalls.getClientPlayer(), limbSwing, limbSwingPower, 0, headY, headX);
         if (cowData.isEating()) {
-            cowModel.getHead().y = cowData.getHeadEatPositionScale(partialTick);
+            getModel().getHead().y = cowData.getHeadEatPositionScale(partialTick);
             if (oldAngle == 0)
-                oldAngle = cowModel.getHead().xRot;
-            cowModel.getHead().xRot = Mth.lerp(partialTick, oldAngle, cowData.getHeadEatAngleScale(ClientSidedCalls.getClientPlayer(), partialTick));
-            oldAngle = cowModel.getHead().xRot;
+                oldAngle = getModel().getHead().xRot;
+            getModel().getHead().xRot = Mth.lerp(partialTick, oldAngle, cowData.getHeadEatAngleScale(ClientSidedCalls.getClientPlayer(), partialTick));
+            oldAngle = getModel().getHead().xRot;
 
         }
-        cowModel.renderToBuffer(
+        getModel().renderToBuffer(
                 poseStack,
                 buffer.getBuffer(RenderType.entityCutout(getTexture())),
                 packedLight,

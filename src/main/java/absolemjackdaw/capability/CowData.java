@@ -28,9 +28,9 @@ public class CowData {
     private boolean isAnimal = false;
     private int eating = 0;
 
-    /**not saved*/
+    /*not saved*/
     public int intFlag, intFlag2 = 0;
-
+    public boolean flag, flag2;
 
     public void resetCustoms() {
         intFlag2 = intFlag = 0;

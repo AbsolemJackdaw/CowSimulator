@@ -5,15 +5,13 @@ import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.AbstractFish;
 import net.minecraft.world.entity.animal.Squid;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.BedBlock;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -22,6 +20,16 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = CowSimulator.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class AxolotlCantDoAlotl {
+
+    @SubscribeEvent
+    public static void doNotMove(TickEvent.PlayerTickEvent event) {
+        CowData.get(event.player).ifPresent(cowData -> {
+
+            if (cowData.flag) { //is healing
+                event.player.setDeltaMovement(0, 0, 0);
+            }
+        });
+    }
 
     @SubscribeEvent
     public static void dontUseItems(LivingEntityUseItemEvent.Start event) {
@@ -79,6 +87,4 @@ public class AxolotlCantDoAlotl {
             });
         }
     }
-
-
 }

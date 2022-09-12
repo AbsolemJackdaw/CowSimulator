@@ -1,18 +1,15 @@
 package absolemjackdaw.animals.model;
 
+import absolemjackdaw.capability.CowData;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class PlayerAxolotlModel<T extends AbstractClientPlayer> extends AgeableListModel<T> {
     public static final float SWIMMING_LEG_XROT = 1.8849558F;
@@ -73,9 +70,13 @@ public class PlayerAxolotlModel<T extends AbstractClientPlayer> extends AgeableL
 
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float some_float, float headY, float headX) {
         // this.setupInitialAnimationValues(entity, p_170399_, p_170400_);
-        if (false) { //TODO playing dead
+        if (CowData.get(entity).isPresent() && CowData.get(entity).resolve().get().flag) { //TODO playing dead
             this.setupPlayDeadAnimation(limbSwing);
         } else {
+            this.body.xRot = this.lerpTo(0.2F, this.body.xRot, 0.0F);
+            this.body.yRot = this.lerpTo(this.body.yRot, limbSwingAmount * ((float) Math.PI / 180F));
+            this.body.zRot = this.lerpTo(this.body.zRot, 0.0F);
+
             this.head.xRot = headX * ((float) Math.PI / 180F);
             this.head.yRot = headY * ((float) Math.PI / 180F);
             boolean flag = entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entity.getXRot() != entity.xRotO || entity.getYRot() != entity.yRotO || entity.xOld != entity.getX() || entity.zOld != entity.getZ();
@@ -158,7 +159,7 @@ public class PlayerAxolotlModel<T extends AbstractClientPlayer> extends AgeableL
     private void setupWaterHoveringAnimation(float limbswing) {
         float f = limbswing * 0.075F;
         float f1 = Mth.cos(f);
-        this.body.xRot = this.lerpTo(this.body.xRot, -0.15F + 0.075F * f1*5f);
+        this.body.xRot = this.lerpTo(this.body.xRot, -0.15F + 0.075F * f1 * 5f);
         this.topGills.xRot = this.lerpTo(this.topGills.xRot, 0.2F * f1);
         this.leftGills.yRot = this.lerpTo(this.leftGills.yRot, -0.3F * f1 - 0.19F);
         this.rightGills.yRot = this.lerpTo(this.rightGills.yRot, -this.leftGills.yRot);
