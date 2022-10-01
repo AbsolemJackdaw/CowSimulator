@@ -2,8 +2,8 @@ package absolemjackdaw;
 
 import absolemjackdaw.animals.AnimalChanger;
 import absolemjackdaw.animals.AnimalRegistry;
-import absolemjackdaw.animals.Axolotl;
-import absolemjackdaw.animals.Cow;
+import absolemjackdaw.animals.AxolotlChanger;
+import absolemjackdaw.animals.CowChanger;
 import absolemjackdaw.item.AnimalPotion;
 import absolemjackdaw.item.RegisterItem;
 import net.minecraft.resources.ResourceLocation;
@@ -26,8 +26,8 @@ public class CowApi {
     public static final ResourceLocation axolotlAnimal = new ResourceLocation(CowSimulator.MODID, "axolotl");
 
     static {
-        register(new Cow(), cowAnimal, Items.MILK_BUCKET, 0x654321);
-        register(new Axolotl(), axolotlAnimal, Items.KELP, 0xf983fb);
+        register(new CowChanger(), cowAnimal, Items.MILK_BUCKET, 0x654321);
+        register(new AxolotlChanger(), axolotlAnimal, Items.KELP, 0xf983fb);
     }
 
     public static void register(AnimalChanger curse, ResourceLocation animalIdentifier, Item potionIngredient, int color) {

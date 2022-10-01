@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Locale;
 
-public class Axolotl extends AnimalChanger {
+public class AxolotlChanger extends AnimalChanger {
 
     private PlayerAxolotlModel<AbstractClientPlayer> model;
 
@@ -31,7 +31,7 @@ public class Axolotl extends AnimalChanger {
         return model;
     }
 
-    public Axolotl() {
+    public AxolotlChanger() {
         super(new ResourceLocation(String.format(Locale.ROOT, "textures/entity/axolotl/axolotl_%s.png", net.minecraft.world.entity.animal.axolotl.Axolotl.Variant.LUCY.toString().toLowerCase())));
     }
 

@@ -1,6 +1,12 @@
 {
-  "item.minecraft.potion.effect.cow_potion": "Potion Of Cow Simulation",
-  "item.minecraft.splash_potion.effect.cow_potion": "Splash Potion Of Cow Simulation",
-  "item.minecraft.lingering_potion.effect.cow_potion": "Lingering Potion of Cow Simulation",
-  "item.minecraft.tipped_arrow.effect.cow_potion": "Arrow of Cow Simulation"
+  "item.minecraft.potion.effect.cow_potion": "Potion Of SiMooLation",
+  "item.minecraft.splash_potion.effect.cow_potion": "Splash Potion Of SiMooLation",
+  "item.minecraft.lingering_potion.effect.cow_potion": "Lingering Potion of SiMooLation",
+  "item.minecraft.tipped_arrow.effect.cow_potion": "Arrow of SiMooLation",
+  "effect.cowsimulator.cow_effect" : "Cow Simulator",
+
+  "item.minecraft.potion.effect.axolotl_potion": "Potion Of Axolotl Simulation",
+  "item.minecraft.splash_potion.effect.axolotl_potion": "Splash Potion Of Axolotl Simulation",
+  "item.minecraft.lingering_potion.effect.axolotl_potion": "Lingering Potion of Axolotl Simulation",
+  "item.minecraft.tipped_arrow.effect.axolotl_potion": "Arrow of Axolotl Simulation"
 }

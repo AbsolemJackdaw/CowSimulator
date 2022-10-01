@@ -1,6 +1,5 @@
 package absolemjackdaw;
 
-import absolemjackdaw.events.axolotl.OnAnimalChangeEvent;
 import absolemjackdaw.item.AnimalBrew;
 import absolemjackdaw.item.RegisterItem;
 import absolemjackdaw.network.CowNetwork;
@@ -29,7 +28,6 @@ public class CowSimulator {
         CowNetwork.init();
         RegisterItem.init();
         CowApi.classLoad();
-        CowApi.registerTurnedListener(new OnAnimalChangeEvent());
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CowSimulator::modConfig);
         ModLoadingContext modLoadingContext = ModLoadingContext.get();

@@ -21,11 +21,11 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class Cow extends AnimalChanger {
+public class CowChanger extends AnimalChanger {
     private CowModel<AbstractClientPlayer> model;
     private static float oldAngle = 0.0f;
 
-    public Cow() {
+    public CowChanger() {
         super(new ResourceLocation("textures/entity/cow/cow.png"));
     }
 
