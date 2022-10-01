@@ -1,0 +1,12 @@
+{
+  "item.minecraft.potion.effect.cow_potion": "Potion de Simulation de Vache",
+  "item.minecraft.splash_potion.effect.cow_potion": "Potion Jetable de Simulation de Vache",
+  "item.minecraft.lingering_potion.effect.cow_potion": "Potion de Persistance de Simulation de Vache",
+  "item.minecraft.tipped_arrow.effect.cow_potion": "Flèche de Simulation de Vache",
+  "effect.cowsimulator.cow_effect" : "Simulateur de Vache"
+  
+  "item.minecraft.potion.effect.axolotl_potion": "Potion de Simulation d'Axolotl",
+  "item.minecraft.splash_potion.effect.axolotl_potion": "Potion Jetable de Simulation d'Axolotl",
+  "item.minecraft.lingering_potion.effect.axolotl_potion": "Potion de Persistance de Simulation d'Axolotl",
+  "item.minecraft.tipped_arrow.effect.axolotl_potion": "Flèche de Simulation d'Axolotl"
+}
