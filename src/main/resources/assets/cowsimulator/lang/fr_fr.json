@@ -1,6 +1,6 @@
 {
   "item.minecraft.potion.effect.cow_potion": "Potion de Simulateur de vache",
-  "item.minecraft.splash_potion.effect.cow_potion": "Spash Potion de Simulateur de vache",
+  "item.minecraft.splash_potion.effect.cow_potion": "Splash Potion de Simulateur de vache",
   "item.minecraft.lingering_potion.effect.cow_potion": "Potion de persistance de Simulateur de vache",
   "item.minecraft.tipped_arrow.effect.cow_potion": "Flèche de Simulateur de vache",
   "effect.cowsimulator.cow_effect" : "Simulateur de vache"
