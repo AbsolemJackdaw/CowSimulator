@@ -20,15 +20,21 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class CowChanger extends AnimalChanger {
-    private CowModel<AbstractClientPlayer> model;
     private static float oldAngle = 0.0f;
+    private CowModel<AbstractClientPlayer> model;
 
     public CowChanger() {
         super(new ResourceLocation("textures/entity/cow/cow.png"));
     }
 
+    @Override
+    public void render(CowData data, Player player, PlayerRenderer renderer, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight) {
+        super.render(data, player, renderer, partialTick, poseStack, multiBufferSource, packedLight);
+    }
     public CowModel<AbstractClientPlayer> getModel() {
         if (model == null)
             model = new CowModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.COW)) {
@@ -67,12 +73,6 @@ public class CowChanger extends AnimalChanger {
             };
         return model;
     }
-
-    @Override
-    public void render(CowData data, Player player, PlayerRenderer renderer, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight) {
-        super.render(data, player, renderer, partialTick, poseStack, multiBufferSource, packedLight);
-    }
-
     @Override
     public void renderSpecific(CowData cowData, Player player, PlayerRenderer renderer, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float headX, float headY, float bodyLerpY) {
         if (player.isSleeping()) {
@@ -98,18 +98,6 @@ public class CowChanger extends AnimalChanger {
             default -> 270.0F;
         };
     }
-
-    @Override
-    public void renderBody(CowData cowData, InteractionHand hand, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float partialTick, float interpolatedPitch, float swingProgress, float equipProgress, ItemStack stack) {
-        poseStack.translate(0, -0.7, -0.2);
-        poseStack.mulPose(new Quaternion(0, 0, 180, true));
-        poseStack.mulPose(new Quaternion(ClientSidedCalls.getClientPlayer().getXRot() * -1, 0, 0, true));
-        if (getModel() != null)
-            getModel().getHead().visible = false;
-        renderCow(cowData, poseStack, multiBufferSource, packedLight, 0, 0, partialTick);
-
-    }
-
     private void renderCow(CowData cowData, PoseStack poseStack, MultiBufferSource buffer, int packedLight, float headX, float headY, float partialTick) {
         getModel().young = false;
         float limbSwingPower = Mth.lerp(partialTick, ClientSidedCalls.getClientPlayer().animationSpeedOld, ClientSidedCalls.getClientPlayer().animationSpeed);
@@ -133,6 +121,14 @@ public class CowChanger extends AnimalChanger {
                 LivingEntityRenderer.getOverlayCoords(ClientSidedCalls.getClientPlayer(), 0.0F),
                 1f, 1f, 1f, 1f);
     }
+    @Override
+    public void renderBody(CowData cowData, InteractionHand hand, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float partialTick, float interpolatedPitch, float swingProgress, float equipProgress, ItemStack stack) {
+        poseStack.translate(0, -0.7, -0.2);
+        poseStack.mulPose(new Quaternion(0, 0, 180, true));
+        poseStack.mulPose(new Quaternion(ClientSidedCalls.getClientPlayer().getXRot() * -1, 0, 0, true));
+        if (getModel() != null)
+            getModel().getHead().visible = false;
+        renderCow(cowData, poseStack, multiBufferSource, packedLight, 0, 0, partialTick);
 
-
+    }
 }

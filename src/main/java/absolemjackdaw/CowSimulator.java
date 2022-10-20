@@ -4,6 +4,7 @@ import absolemjackdaw.item.AnimalBrew;
 import absolemjackdaw.item.RegisterItem;
 import absolemjackdaw.network.CowNetwork;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,7 +28,8 @@ public class CowSimulator {
     static {
         CowNetwork.init();
         RegisterItem.init();
-        CowApi.classLoad();
+        CowApi.registerAnimalPotion(Constants.cowAnimal, Items.MILK_BUCKET, 0x654321);
+        CowApi.registerAnimalPotion(Constants.axolotlAnimal, Items.KELP, 0xf983fb);
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CowSimulator::modConfig);
         ModLoadingContext modLoadingContext = ModLoadingContext.get();

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public enum AnimalRegistry {
+public enum ClientAnimalChangerRegistry {
     INSTANCE;
 
     private final Map<ResourceLocation, AnimalChanger> animals = new HashMap<>();

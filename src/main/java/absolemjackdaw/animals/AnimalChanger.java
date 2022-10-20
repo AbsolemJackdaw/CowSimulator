@@ -13,6 +13,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class AnimalChanger {
 
@@ -63,9 +65,9 @@ public abstract class AnimalChanger {
         renderSpecific(data, player, renderer, partialTick, poseStack, multiBufferSource, packedLight, lerpX, lerpY, bodyLerpY);
     }
 
-    public abstract AgeableListModel<AbstractClientPlayer> getModel();
-
     public abstract void renderSpecific(CowData data, Player player, PlayerRenderer renderer, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float lerpedX, float lerpedY, float lerpedBodyY);
+
+    public abstract AgeableListModel<AbstractClientPlayer> getModel();
 
     public abstract void renderBody(CowData data, InteractionHand hand, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float partialTick, float interpolatedPitch, float swingProgress, float equipProgress, ItemStack stack);
 }

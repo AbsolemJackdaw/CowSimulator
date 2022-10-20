@@ -22,14 +22,8 @@ import java.util.Locale;
 
 public class AxolotlChanger extends AnimalChanger {
 
+    private static float oldAngle = 0.0f;
     private PlayerAxolotlModel<AbstractClientPlayer> model;
-
-    public PlayerAxolotlModel<AbstractClientPlayer> getModel() {
-        if (model == null)
-            model = new PlayerAxolotlModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(RegisterModel.AXOLOTLLAYER));
-
-        return model;
-    }
 
     public AxolotlChanger() {
         super(new ResourceLocation(String.format(Locale.ROOT, "textures/entity/axolotl/axolotl_%s.png", net.minecraft.world.entity.animal.axolotl.Axolotl.Variant.LUCY.toString().toLowerCase())));
@@ -42,6 +36,13 @@ public class AxolotlChanger extends AnimalChanger {
 
     }
 
+    public PlayerAxolotlModel<AbstractClientPlayer> getModel() {
+        if (model == null)
+            model = new PlayerAxolotlModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(RegisterModel.AXOLOTLLAYER));
+
+        return model;
+    }
+
     @Override
     public void renderBody(CowData data, InteractionHand hand, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float partialTick, float interpolatedPitch, float swingProgress, float equipProgress, ItemStack stack) {
         poseStack.translate(0, -0.4, 1.0);
@@ -52,8 +53,6 @@ public class AxolotlChanger extends AnimalChanger {
         renderAxolotl(data, poseStack, multiBufferSource, packedLight, 0, 0, partialTick);
 
     }
-
-    private static float oldAngle = 0.0f;
 
     private void renderAxolotl(CowData cowData, PoseStack poseStack, MultiBufferSource buffer, int packedLight, float headX, float headY, float partialTick) {
         getModel().young = false;

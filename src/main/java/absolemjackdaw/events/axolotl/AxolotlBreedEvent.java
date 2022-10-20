@@ -1,6 +1,6 @@
 package absolemjackdaw.events.axolotl;
 
-import absolemjackdaw.CowApi;
+import absolemjackdaw.Constants;
 import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -28,7 +28,7 @@ public class AxolotlBreedEvent {
         Player player = event.getEntity();
         if (event.getTarget() instanceof Axolotl axolotl && event.getHand().equals(InteractionHand.MAIN_HAND)) {
             CowData.get(player).ifPresent(cowData -> {
-                if (cowData.isServerAnimal(player) && cowData.is(CowApi.axolotlAnimal)) {
+                if (cowData.isServerAnimal(player) && cowData.is(Constants.axolotlAnimal)) {
                     if (!axolotl.isInLove())
                         axolotl.setInLove(player);
                 }
@@ -40,7 +40,7 @@ public class AxolotlBreedEvent {
     public static void breed(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         CowData.get(player).ifPresent(cowData -> {
-            if (player instanceof ServerPlayer serverPlayer && cowData.isServerAnimal(player) && cowData.is(CowApi.axolotlAnimal)) {
+            if (player instanceof ServerPlayer serverPlayer && cowData.isServerAnimal(player) && cowData.is(Constants.axolotlAnimal)) {
                 List<Axolotl> mates = player.level.getEntitiesOfClass(Axolotl.class, player.getBoundingBox());
                 if (!mates.isEmpty())
                     for (Axolotl mate : mates)

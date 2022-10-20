@@ -60,14 +60,6 @@ public class PlayerAxolotlModel<T extends AbstractClientPlayer> extends AgeableL
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
-    protected Iterable<ModelPart> headParts() {
-        return ImmutableList.of();
-    }
-
-    protected Iterable<ModelPart> bodyParts() {
-        return ImmutableList.of(this.body);
-    }
-
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float some_float, float headY, float headX) {
         // this.setupInitialAnimationValues(entity, p_170399_, p_170400_);
         if (CowData.get(entity).isPresent() && CowData.get(entity).resolve().get().flag) { //TODO playing dead
@@ -213,5 +205,13 @@ public class PlayerAxolotlModel<T extends AbstractClientPlayer> extends AgeableL
         this.bodyParts().forEach((p_102051_) -> {
             p_102051_.render(poseStack, vertexConsumer, lightOne, lightTwo, r, g, b, partialTick);
         });
+    }
+
+    protected Iterable<ModelPart> headParts() {
+        return ImmutableList.of();
+    }
+
+    protected Iterable<ModelPart> bodyParts() {
+        return ImmutableList.of(this.body);
     }
 }

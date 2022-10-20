@@ -25,17 +25,11 @@ public class CowData {
     private static final ItemStack highest = new ItemStack(Items.CARROT, 1);
     @Nullable
     private final ServerPlayer serverPlayer;
-    private boolean isAnimal = false;
-    private int eating = 0;
-
     /*not saved*/
     public int intFlag, intFlag2 = 0;
     public boolean flag, flag2;
-
-    public void resetCustoms() {
-        intFlag2 = intFlag = 0;
-    }
-
+    private boolean isAnimal = false;
+    private int eating = 0;
     private ResourceLocation animal = new ResourceLocation("");
 
     public CowData(@Nullable ServerPlayer serverPlayer) {
@@ -45,6 +39,10 @@ public class CowData {
     public static LazyOptional<CowData> get(Player player) {
 
         return player.getCapability(CowCapability.CAPABILITY, null);
+    }
+
+    public void resetCustoms() {
+        intFlag2 = intFlag = 0;
     }
 
     public CompoundTag write() {
@@ -102,6 +100,11 @@ public class CowData {
         syncFlag();
     }
 
+    private void syncFlag() {
+        if (serverPlayer != null)
+            CowNetwork.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CSyncCowData().with(animal));
+    }
+
     public ResourceLocation getAnimalIdentifier() {
         return animal;
     }
@@ -111,11 +114,6 @@ public class CowData {
      */
     public boolean is(ResourceLocation animal) {
         return this.isAnimal && this.animal != null && this.animal.equals(animal);
-    }
-
-    private void syncFlag() {
-        if (serverPlayer != null)
-            CowNetwork.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CSyncCowData().with(animal));
     }
 
     public void sync() {

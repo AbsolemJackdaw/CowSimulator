@@ -1,6 +1,6 @@
 package absolemjackdaw.events.axolotl;
 
-import absolemjackdaw.CowApi;
+import absolemjackdaw.Constants;
 import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
 import net.minecraft.sounds.SoundEvents;
@@ -40,7 +40,7 @@ public class AxolotlCantDoAlotl {
 
     public static void dontDoEvent(Player player, Event event) {
         CowData.get(player).ifPresent(cowData -> {
-            if (cowData.is(CowApi.axolotlAnimal)) {
+            if (cowData.is(Constants.axolotlAnimal)) {
                 event.setCanceled(true);
                 if (cowData.isServerAnimal(player))
                     player.level.playSound(
@@ -83,7 +83,7 @@ public class AxolotlCantDoAlotl {
                 boolean flag = event.getEntity() instanceof Squid ||
                         event.getEntity() instanceof AbstractFish;
 
-                event.setCanceled(cowData.is(CowApi.axolotlAnimal) && !flag);
+                event.setCanceled(cowData.is(Constants.axolotlAnimal) && !flag);
             });
         }
     }

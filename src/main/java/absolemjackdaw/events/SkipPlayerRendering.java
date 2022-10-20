@@ -1,7 +1,7 @@
 package absolemjackdaw.events;
 
 import absolemjackdaw.CowSimulator;
-import absolemjackdaw.animals.AnimalRegistry;
+import absolemjackdaw.animals.ClientAnimalChangerRegistry;
 import absolemjackdaw.capability.CowData;
 import absolemjackdaw.client.ClientSidedCalls;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +22,7 @@ public class SkipPlayerRendering {
             if (cowData.isClientAnimal(event.getEntity())) {
                 event.setCanceled(true); //cancel complete rendering and render only a cow instead
                 event.getPoseStack().pushPose();
-                AnimalRegistry.INSTANCE.get(cowData.getAnimalIdentifier()).ifPresent(animalCurse ->
+                ClientAnimalChangerRegistry.INSTANCE.get(cowData.getAnimalIdentifier()).ifPresent(animalCurse ->
                         animalCurse.render(cowData, player, event.getRenderer(), event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
                 event.getPoseStack().popPose();
             }
@@ -36,7 +36,7 @@ public class SkipPlayerRendering {
                 event.setCanceled(true);
 
                 event.getPoseStack().pushPose();
-                AnimalRegistry.INSTANCE.get(cowData.getAnimalIdentifier()).ifPresent(animalCurse ->
+                ClientAnimalChangerRegistry.INSTANCE.get(cowData.getAnimalIdentifier()).ifPresent(animalCurse ->
                         animalCurse.renderBody(cowData, event.getHand(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), event.getPartialTick(), event.getInterpolatedPitch(), event.getSwingProgress(), event.getEquipProgress(), event.getItemStack()));
                 event.getPoseStack().popPose();
             }

@@ -24,8 +24,8 @@ public class AnimalBrew implements IBrewingRecipe {
     }
 
     @Override
-    public boolean isIngredient(ItemStack ingredient) {
-        return ingredient.getItem().equals(ingredient);
+    public boolean isIngredient(ItemStack input) {
+        return input.getItem().equals(this.ingredient);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package absolemjackdaw.events.axolotl;
 
-import absolemjackdaw.CowApi;
+import absolemjackdaw.Constants;
 import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
 import net.minecraft.tags.ItemTags;
@@ -54,7 +54,7 @@ public class AxolotlDoesInWater {
     public static void handleWaterExisting(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         CowData.get(player).ifPresent(cowData -> {
-            if (cowData.is(CowApi.axolotlAnimal)) {
+            if (cowData.is(Constants.axolotlAnimal)) {
                 boolean inWater = player.isInWaterRainOrBubble();
                 breathInWater(player, inWater);
                 //canSee(player, inWater);
@@ -72,59 +72,9 @@ public class AxolotlDoesInWater {
         });
     }
 
-    private static void playDeadToHeal(Player player, CowData data) {
-        if (player.getHealth() <= 2) {
-            data.flag = true;
-        } else if (player.getHealth() >= player.getMaxHealth() - 6)
-            data.flag = false;
-        if (data.flag && player.getHealth() < player.getMaxHealth() - 6 && player.level.getGameTime() % 40 == 1) {
-            player.heal(1.0F);
-        }
-    }
-
-    private static void hover(Player player) {
-        boolean moves = player.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || player.getXRot() != player.xRotO || player.getYRot() != player.yRotO || player.xOld != player.getX() || player.zOld != player.getZ();
-        if (!moves)
-            player.setDeltaMovement(hovervec);
-    }
-
-    private static void resetMovement(Player player) {
-        AttributeInstance swim = player.getAttribute(ForgeMod.SWIM_SPEED.get());
-        AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (speed == null || swim == null) return;
-        if (speed.hasModifier(slower)) speed.removeModifier(slower);
-        if (swim.hasModifier(faster)) swim.removeModifier(faster);
-    }
-
-    private static void goSlow(Player player) {
-        AttributeInstance swim = player.getAttribute(ForgeMod.SWIM_SPEED.get());
-        AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (!speed.hasModifier(slower)) speed.addTransientModifier(slower);
-        if (swim.hasModifier(faster)) swim.removeModifier(faster);
-    }
-
-    private static void goFast(Player player) {
-        AttributeInstance swim = player.getAttribute(ForgeMod.SWIM_SPEED.get());
-        AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (!swim.hasModifier(faster))
-            swim.addTransientModifier(faster);
-        if (speed.hasModifier(slower))
-            speed.removeModifier(slower);
-    }
-
     private static void breathInWater(Player player, boolean inWater) {
         if (inWater) player.setAirSupply(0);
         else player.setAirSupply(player.getMaxAirSupply());
-    }
-
-    private static void canSee(Player player, boolean inWater) {
-        if (inWater) {
-            if (!player.hasEffect(MobEffects.NIGHT_VISION) || player.getEffect(MobEffects.NIGHT_VISION).getDuration() < 80)
-                player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 100, 1, false, false, false));
-        } else {
-            if (player.hasEffect(MobEffects.NIGHT_VISION))
-                player.removeEffect(MobEffects.NIGHT_VISION);
-        }
     }
 
     private static void hurtOutside(CowData data, Player player, boolean inWater) {
@@ -138,5 +88,55 @@ public class AxolotlDoesInWater {
             }
         }
 
+    }
+
+    private static void goFast(Player player) {
+        AttributeInstance swim = player.getAttribute(ForgeMod.SWIM_SPEED.get());
+        AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (!swim.hasModifier(faster))
+            swim.addTransientModifier(faster);
+        if (speed.hasModifier(slower))
+            speed.removeModifier(slower);
+    }
+
+    private static void hover(Player player) {
+        boolean moves = player.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || player.getXRot() != player.xRotO || player.getYRot() != player.yRotO || player.xOld != player.getX() || player.zOld != player.getZ();
+        if (!moves)
+            player.setDeltaMovement(hovervec);
+    }
+
+    private static void playDeadToHeal(Player player, CowData data) {
+        if (player.getHealth() <= 2) {
+            data.flag = true;
+        } else if (player.getHealth() >= player.getMaxHealth() - 6)
+            data.flag = false;
+        if (data.flag && player.getHealth() < player.getMaxHealth() - 6 && player.level.getGameTime() % 40 == 1) {
+            player.heal(1.0F);
+        }
+    }
+
+    private static void goSlow(Player player) {
+        AttributeInstance swim = player.getAttribute(ForgeMod.SWIM_SPEED.get());
+        AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (!speed.hasModifier(slower)) speed.addTransientModifier(slower);
+        if (swim.hasModifier(faster)) swim.removeModifier(faster);
+    }
+
+    private static void resetMovement(Player player) {
+        AttributeInstance swim = player.getAttribute(ForgeMod.SWIM_SPEED.get());
+        AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (speed == null || swim == null) return;
+        if (speed.hasModifier(slower)) speed.removeModifier(slower);
+        if (swim.hasModifier(faster)) swim.removeModifier(faster);
+    }
+
+    private static void canSee(Player player, boolean inWater) {
+        if (inWater) {
+            if (!player.hasEffect(MobEffects.NIGHT_VISION) || player.getEffect(MobEffects.NIGHT_VISION).getDuration() < 80)
+                player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 100, 1, false, false, false));
+        } else {
+            if (player.hasEffect(MobEffects.NIGHT_VISION))
+                player.removeEffect(MobEffects.NIGHT_VISION);
+        }
     }
 }

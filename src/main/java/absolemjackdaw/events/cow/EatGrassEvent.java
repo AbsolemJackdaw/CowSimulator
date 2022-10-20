@@ -1,7 +1,7 @@
 package absolemjackdaw.events.cow;
 
 import absolemjackdaw.ConfigData;
-import absolemjackdaw.CowApi;
+import absolemjackdaw.Constants;
 import absolemjackdaw.CowSimulator;
 import absolemjackdaw.capability.CowData;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +23,7 @@ public class EatGrassEvent {
     public static void eat(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         CowData.get(player).ifPresent(cowData -> {
-            if (cowData.isServerAnimal(player) && cowData.is(CowApi.cowAnimal)) {
+            if (cowData.isServerAnimal(player) && cowData.is(Constants.cowAnimal)) {
                 if (player instanceof ServerPlayer serverPlayer) {
                     if (serverPlayer.gameMode.isDestroyingBlock) {
                         cowData.eat();
@@ -48,7 +48,7 @@ public class EatGrassEvent {
     public static void eat(BlockEvent.BreakEvent event) { //fired before block is broken.
         Player player = event.getPlayer();
         CowData.get(player).ifPresent(cowData -> {
-            if (cowData.isServerAnimal(player) && !player.isCreative() && cowData.is(CowApi.cowAnimal)) {
+            if (cowData.isServerAnimal(player) && !player.isCreative() && cowData.is(Constants.cowAnimal)) {
                 event.setCanceled(true);
                 if (canEat(event.getState().getBlock())) {
                     ItemStack food = cowData.getFoodFor(event.getState().getBlock());
@@ -69,16 +69,6 @@ public class EatGrassEvent {
         });
     }
 
-    @SubscribeEvent
-    public static void eat(PlayerEvent.BreakSpeed event) {
-        Player player = event.getEntity();
-        CowData.get(player).ifPresent(cowData -> {
-            if (cowData.is(CowApi.cowAnimal)) {
-                event.setNewSpeed(canEat(event.getState().getBlock()) ? 0.5f : 0.0f);
-            }
-        });
-    }
-
     private static boolean canEat(Block block) {
         return block instanceof GrassBlock
                 || block instanceof DoublePlantBlock
@@ -87,5 +77,15 @@ public class EatGrassEvent {
                 || block instanceof SeagrassBlock
                 || block instanceof MossBlock
                 || block instanceof CropBlock;
+    }
+
+    @SubscribeEvent
+    public static void eat(PlayerEvent.BreakSpeed event) {
+        Player player = event.getEntity();
+        CowData.get(player).ifPresent(cowData -> {
+            if (cowData.is(Constants.cowAnimal)) {
+                event.setNewSpeed(canEat(event.getState().getBlock()) ? 0.5f : 0.0f);
+            }
+        });
     }
 }
